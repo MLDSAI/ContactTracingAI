@@ -102,11 +102,11 @@ class DataSet:
         '''
         suspicious = self.detections.groupby('id')[['frame', 'topx', 'topy', 
                                         'offsetx', 'offsety']].apply(
-                                        get_suspicious_boxes, disappear=disappear,
+                                        self.get_suspicious_boxes, disappear=disappear,
                                         all_suspicious=all_suspicious, xs=xs, ys=ys)
 
-        suspicious_group = [(pid, query[pid]) for pid in query.keys() 
-                                                if query[pid] != -1]
+        suspicious_group = [(pid, self.query[pid]) for pid in self.query.keys() 
+                                                if self.query[pid] != -1]
         if disappear:
             self.query = suspicious_group
         else:       
@@ -200,7 +200,7 @@ class DataSet:
             # 'num_additional' frames after the last frame
             additional_frames = ((self.video[last_frame + i], None)
                                 for i in range(num_additional) 
-                                    if last_frame + i < len(video))
+                                    if last_frame + i < len(self.video))
             video_gen = itertools.chain(video_gen, additional_frames)
             
         elif sus_type == 'appear':
@@ -271,7 +271,7 @@ class DataSet:
                                                                 start_y, offsetx, offsety)
                     cv2.imwrite(filename, crop)
         
-    def sort_img(qf, ql, qc, gf, gl, gc):
+    def sort_img(self, qf, ql, qc, gf, gl, gc):
         '''
         Given the query and gallery features, labels, and cameras, returns a sorted 
         index of best possible matches for a particular query, as well as the 
@@ -306,7 +306,7 @@ class DataSet:
         index = index[mask]
         return index, score
     
-    def reidentify_all_query(result_mat_path, thresh=0):
+    def reidentify_all_query(self, result_mat_path, thresh=0):
         '''
         Given the path to the result matrix, performs subject re-idenitification
 
@@ -339,7 +339,7 @@ class DataSet:
         # Looking to extract the frame value
         q_frame = query_path.split('/')[-1].split('_')[0]
 
-        index, scores = sort_img(query_features[q_id], query_labels[q_id], 
+        index, scores = self.sort_img(query_features[q_id], query_labels[q_id], 
                                     query_cams[q_id], gallery_features, 
                                     gallery_labels, gallery_cams)
 
