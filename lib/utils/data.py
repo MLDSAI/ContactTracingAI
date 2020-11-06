@@ -1,5 +1,9 @@
 import pandas as pd
 import skvideo.io
+import torch
+import torchvision
+import numpy as np
+
 
 class DataSet:
     def __init__(self, file_name, video_path):
@@ -65,7 +69,7 @@ class DataSet:
         else:
             return [[int(attribute) for attribute in list(suspicious_image)]]
     
-    def get_suspicious_group(self, disappear, all_suspicious, xs=(10, 950), ys=(10, 530))):
+    def get_suspicious_group(self, disappear, all_suspicious, xs=(10, 950), ys=(10, 530)):
         '''
         Returns a list of the form [(p_id, [[<frame>, <topx>, <topy>, <width>, <height>], ...])]
         for either all boxes that match a suspicious id (if all_suspicious is true) or just one
@@ -110,7 +114,7 @@ class DataSet:
             suspicious = self.query
         
         elif sus_type == 'appear':
-             if self.gallery is None:
+            if self.gallery is None:
                 print('Ensure that you run \'get_suspicious_group\' for aappearing images to get gallery group')
                 return
             suspicious = self.gallery
@@ -158,7 +162,7 @@ class DataSet:
             suspicious = self.query
         
         elif sus_type == 'appear' and self.gallery is not None:
-             if self.gallery is None:
+            if self.gallery is None:
                 print('Ensure that you run \'get_suspicious_group\' for aappearing images to get gallery group')
                 return
             suspicious = self.gallery
@@ -242,15 +246,15 @@ def make_dataset(self):
             pid_dir = '{}/{}'.format(parent_folder, pid)
             os.makedirs(pid_dir, exist_ok=True)
             for (frame, x, y, offsetx, offsety) in bboxes:
-            frame_array = self.video[frame - 1]
-            start_x = max(0, x)
-            start_y = max(0, y)
+                frame_array = self.video[frame - 1]
+                start_x = max(0, x)
+                start_y = max(0, y)
 
-            crop = frame_array[start_y:y + offsety, 
-                                start_x:x + offsetx]
-            filename = '{}/{}_{}_{}_{}_{}.jpg'.format(pid_dir, frame, start_x, 
-                                                        start_y, offsetx, offsety)
-            cv2.imwrite(filename, crop)
+                crop = frame_array[start_y:y + offsety, 
+                                    start_x:x + offsetx]
+                filename = '{}/{}_{}_{}_{}_{}.jpg'.format(pid_dir, frame, start_x, 
+                                                            start_y, offsetx, offsety)
+                cv2.imwrite(filename, crop)
     
     def sort_img(qf, ql, qc, gf, gl, gc):
         '''
