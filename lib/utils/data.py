@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import skvideo.io
 import torch
@@ -14,7 +16,7 @@ class DataSet:
         self.video   = skvideo.io.vread(video_path)
         self.reid    = None
 
-    def get_suspicious_boxes(group, disappear=True, all_suspicious=False, 
+    def get_suspicious_boxes(self, group, disappear=True, all_suspicious=False, 
                          xs=(10, 950), ys=(10, 530)):
         '''
         Accepts a pandas groupby object (grouped by a particular person
