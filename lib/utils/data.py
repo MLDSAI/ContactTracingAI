@@ -240,37 +240,37 @@ class DataSet:
         plt.close()
                 
 
-def make_dataset(self):
-    '''
-    Creates a dataset with crops around the bounding box areas for the query and gallery
-    '''
+    def make_dataset(self):
+        '''
+        Creates a dataset with crops around the bounding box areas for the query and gallery
+        '''
 
-    if self.query is None or self.gallery is None:
-        print('Cannot have a null query or gallery')
-        return
+        if self.query is None or self.gallery is None:
+            print('Cannot have a null query or gallery')
+            return
 
-    image_sets = [('query', self.query), 
-                ('gallery', self.gallery)]
+        image_sets = [('query', self.query), 
+                    ('gallery', self.gallery)]
 
-    for (image_type, image_set) in image_sets:
-        if image_type == 'query':
-            parent_folder = 'FairMOT/prbp/query'
-        elif image_type == 'gallery':
-            parent_folder = 'FairMOT/prbp/gallery'
-        for pid, bboxes in image_set:
-            pid_dir = '{}/{}'.format(parent_folder, pid)
-            os.makedirs(pid_dir, exist_ok=True)
-            for (frame, x, y, offsetx, offsety) in bboxes:
-                frame_array = self.video[frame - 1]
-                start_x = max(0, x)
-                start_y = max(0, y)
+        for (image_type, image_set) in image_sets:
+            if image_type == 'query':
+                parent_folder = 'FairMOT/prbp/query'
+            elif image_type == 'gallery':
+                parent_folder = 'FairMOT/prbp/gallery'
+            for pid, bboxes in image_set:
+                pid_dir = '{}/{}'.format(parent_folder, pid)
+                os.makedirs(pid_dir, exist_ok=True)
+                for (frame, x, y, offsetx, offsety) in bboxes:
+                    frame_array = self.video[frame - 1]
+                    start_x = max(0, x)
+                    start_y = max(0, y)
 
-                crop = frame_array[start_y:y + offsety, 
-                                    start_x:x + offsetx]
-                filename = '{}/{}_{}_{}_{}_{}.jpg'.format(pid_dir, frame, start_x, 
-                                                            start_y, offsetx, offsety)
-                cv2.imwrite(filename, crop)
-    
+                    crop = frame_array[start_y:y + offsety, 
+                                        start_x:x + offsetx]
+                    filename = '{}/{}_{}_{}_{}_{}.jpg'.format(pid_dir, frame, start_x, 
+                                                                start_y, offsetx, offsety)
+                    cv2.imwrite(filename, crop)
+        
     def sort_img(qf, ql, qc, gf, gl, gc):
         '''
         Given the query and gallery features, labels, and cameras, returns a sorted 
@@ -390,4 +390,3 @@ def make_dataset(self):
                 new_detections.loc[gallery, 'id'] = self.reid[g_id][0]
 
             new_detections.to_csv(path, header=False, index=False)
-  
