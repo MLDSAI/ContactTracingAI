@@ -100,17 +100,17 @@ class DataSet:
             ys: Tuple of the smallest and largest possible y coordinates for us to not 
                 to consider a bounding box to be along the border of an image
         '''
-        suspicious = self.detections.groupby('id')[['frame', 'topx', 'topy', 
-                                        'offsetx', 'offsety']].apply(
-                                        self.get_suspicious_boxes, disappear=disappear,
-                                        all_suspicious=all_suspicious, xs=xs, ys=ys)
+        query = self.detections.groupby('id')[['frame', 'topx', 'topy', 
+                                               'offsetx', 'offsety']].apply(
+                                               self.get_suspicious_boxes, disappear=disappear,
+                                               all_suspicious=all_suspicious, xs=xs, ys=ys)
 
-        suspicious_group = [(pid, self.query[pid]) for pid in self.query.keys() 
-                                                if self.query[pid] != -1]
+        query = [(pid, query[pid]) for pid in query.keys() 
+                                    if query[pid] != -1]
         if disappear:
-            self.query = suspicious_group
+            self.query = query
         else:       
-            self.gallery = suspicious_group
+            self.gallery = query
     
     def display_suspicious_sample_images(self, sus_type='disappear', title='Sample of suspicious candidates'):
         '''
